@@ -1,15 +1,18 @@
-const express = require("express");
-require("dotenv").config();
-const { connectToMongoDB } = require("./db");
-const bodyparser = require("body-parser");
+import { express } from "express";
+import imageRouter from "./routes/images.routes";
+import authController from "./controllers/auth.controller";
 
 const app = express();
 connectToMongoDB();
 
 const PORT = process.env.PORT || 3000;
 
-app.set("view engine", "ejs");
-app.set("views", "./views");
+app.get("/", (req, res) => {
+  res.send("welcome to the image processor api");
+});
+
+app.use("/api/v1/images", imageRouter);
+app.use("/api/v1/auth", authController);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
