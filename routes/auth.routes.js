@@ -9,3 +9,5 @@ const authRouter = Router();
 authRouter.post("/register", signUpController);
 
 authRouter.post("/login", loginController);
+
+export default authRouter;
