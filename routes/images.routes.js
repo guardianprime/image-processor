@@ -1,7 +1,5 @@
 import { Router } from "express";
-import multer from "multer";
-
-const upload = multer({ dest: "data/" });
+import { upload } from "../middlewares/upload.middlwares.js";
 
 import {
   uploadImageController,

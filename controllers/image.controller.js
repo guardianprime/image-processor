@@ -5,6 +5,7 @@ export const uploadImageController = (req, res) => {
     data: req.file,
   });
 };
+
 export const transformImageController = (req, res) => {};
 export const getImageController = (req, res) => {};
 export const getImagesController = (req, res) => {};
