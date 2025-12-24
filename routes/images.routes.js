@@ -12,12 +12,12 @@ import {
 
 const imageRouter = Router();
 
-imageRouter.post("/images", upload.single("test"), uploadImageController);
+imageRouter.post("/", upload.single("test"), uploadImageController);
 
-imageRouter.post("/images/:id/transform", transformImageController);
+imageRouter.post("/:id/transform", transformImageController);
 
-imageRouter.get("/images", getImagesController);
+imageRouter.get("/", getImagesController);
 
-imageRouter.get("/images/:id", getImageController);
+imageRouter.get("/:id", getImageController);
 
 export default imageRouter;
