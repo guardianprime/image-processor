@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/images", authMiddleware, imageRouter);
 
-app.listen(port, async () => {
+app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-  await connectToMongoDB();
+  connectToMongoDB();
 });
