@@ -1,5 +1,6 @@
 import sharp from "sharp";
-import fs from "fs/promises";
+import fsPromises from "fs/promises";
+import fs from "fs";
 import path from "path";
 
 export const uploadImageController = (req, res) => {
@@ -34,7 +35,7 @@ export const transformImageController = async (req, res) => {
     const imagePath = path.join(process.cwd(), "data", id);
 
     try {
-      await fs.access(imagePath);
+      await fsPromises.access(imagePath);
     } catch (error) {
       return res.status(404).json({
         success: false,
@@ -42,7 +43,7 @@ export const transformImageController = async (req, res) => {
       });
     }
 
-    const imageBuffer = await fs.readFile(imagePath);
+    const imageBuffer = await fsPromises.readFile(imagePath);
 
     let image = sharp(imageBuffer);
 
@@ -121,5 +122,53 @@ export const transformImageController = async (req, res) => {
   }
 };
 
-export const getImageController = (req, res) => {};
+export const getImageController = (req, res) => {
+  try {
+    const imageId = req.params.id;
+    const imagePath = path.join(process.cwd(), "data", imageId);
+
+    if (!fs.existsSync(imagePath)) {
+      return res.status(404).json({
+        success: false,
+        message: "Image not found",
+      });
+    }
+
+    const ext = path.extname(imageId).toLowerCase();
+    const contentTypeMap = {
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".png": "image/png",
+      ".gif": "image/gif",
+      ".webp": "image/webp",
+      ".svg": "image/svg+xml",
+      ".bmp": "image/bmp",
+    };
+
+    const contentType = contentTypeMap[ext] || "application/octet-stream";
+
+    res.set("Content-Type", contentType);
+    res.set("Cache-Control", "public, max-age=86400");
+
+    const fileStream = fs.createReadStream(imagePath);
+
+    fileStream.on("error", (error) => {
+      console.error("File stream error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error reading image file",
+      });
+    });
+
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error("Get image error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve image",
+      details: error.message,
+    });
+  }
+};
+
 export const getImagesController = (req, res) => {};
